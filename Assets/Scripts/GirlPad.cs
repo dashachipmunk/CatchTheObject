@@ -9,17 +9,16 @@ public class GirlPad : MonoBehaviour
     public GameObject girl;
     public Sprite[] girlLook;
     public SpriteRenderer sRender;
-    int girlHealth;
 
     public HealthBar health;
+    public BeautyPoints bP;
     public GameManager gM;
-    
+
     public float xMax;
     
     private void Start()
     {
         health = FindObjectOfType<HealthBar>();
-        girlHealth = health.health * 2;
     }
     private void Update()
     {
@@ -42,31 +41,30 @@ public class GirlPad : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("disease"))
         {
-            girlHealth--;
+            bP.MinusBP();
             GirlLookChange();
-            if (girlHealth % 2 == 0)
+            if (bP.beautyPoints % 2 == 0)
             {
                 health.MinusHeart();
             }
         }
         if (collision.gameObject.CompareTag("heal"))
         {
-            if (girlHealth < 6)
+            if (bP.beautyPoints < 6)
             {
-                girlHealth++;
+                bP.PlusBP();
                 GirlLookChange();
             }
         }
     }
     void GirlLookChange()
     {
-        for (int i = girlHealth; i > 0; i--)
+        for (int i = bP.beautyPoints; i > 0; i--)
         {
-            if (girlHealth == i)
+            if (bP.beautyPoints == i)
             {
                 sRender.sprite = girlLook[i - 1];
             }
         }
     }
-
 }

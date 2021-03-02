@@ -104,11 +104,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9aa81680e73de1948be3605c79d9b92c, type: 3}
   sRender: {fileID: 7300174816230595074}
   health: {fileID: 4715323477221858677, guid: 28ba93ceed8ca5340ad2ec1ab8bd9779, type: 3}
+  bP: {fileID: 8803122049013965901, guid: 8970128381cf55c4d9d79a1739addd66, type: 3}
   gM: {fileID: 5731063701821662921, guid: ef163177a7cad264bae7e2b1d3b10a76, type: 3}
   xMax: 8.33
-  disease: {fileID: 8300000, guid: 66c6ec484710fca4aa9fd6bfa8d0d54e, type: 3}
-  med: {fileID: 8300000, guid: d3996a656817fe149a1b3d585c5f7764, type: 3}
-  condom: {fileID: 8300000, guid: be40597ea7de88149b27bf76aa78822c, type: 3}
 --- !u!60 &5029284575943579397
 PolygonCollider2D:
   m_ObjectHideFlags: 0
