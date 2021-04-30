@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public float condT;
     public float disT;
     public float medsT;
-    public float timeRepeat;
+    public float timer;
 
     [Header("Score etc.")]
     public int score;
@@ -29,9 +29,13 @@ public class GameManager : MonoBehaviour
     [Header("Sounds")]
     public AudioClip audioObj;
     Sounds sound;
+
+    [Header("Animation")]
+    Animator animator;
     private void Awake()
     {
         sound = FindObjectOfType<Sounds>();
+        animator = GetComponent<Animator>();
     }
     void Start()
     {
@@ -42,10 +46,10 @@ public class GameManager : MonoBehaviour
         {
             rB.gravityScale = 1f;
         }
-        InvokeRepeating("Condoms", condT, timeRepeat);
-        InvokeRepeating("Diseases", disT, timeRepeat);
-        InvokeRepeating("Meds", medsT, timeRepeat);
-        InvokeRepeating("Faster", 50f, 50f);
+        StartCoroutine(Condoms(condT));
+        StartCoroutine(Diseases(disT));
+        StartCoroutine(Meds(medsT));
+        StartCoroutine(Faster(timer));
     }
     void Update()
     {
@@ -53,6 +57,7 @@ public class GameManager : MonoBehaviour
         {
             if (isPaused)
             {
+                animator.Play("Button");
                 BackToGame();
             }
             else
@@ -61,7 +66,6 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f;
                 sound.PlaySound(audioObj);
                 isPaused = true;
-                
             }
         }
     }
@@ -71,91 +75,109 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         isPaused = false;
     }
-    void Faster()
-    {
-        if (timeRepeat >= 0.2f)
-        {
-            timeRepeat -= 0.2f;
-        }
-        foreach (var rB in rBs)
-        {
-            rB.gravityScale += 0.2f;
-        }
-    }
     public void AddScore(int addScore)
     {
         score += addScore;
         scoreText.text = "Score: " + score.ToString();
         PlayerPrefs.SetInt("TotalScore", score);
     }
-    
-    public void Condoms()
-    {
-        int randomCondom = Random.Range(0, 5);
-        for (int i = 0; i < condoms.Length; i++)
-        {
-            if (randomCondom == i)
-            {
-                Instantiate(condoms[i], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-            }
-        }
-    }
-    void Diseases()
-    {
-        int randomDisease = Random.Range(0, 25);
-        for (int j = 0; j < diseases.Length; j++)
-        {
-            if (randomDisease == j)
-            {
-                Instantiate(diseases[j], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-            }
-        }
-    }
-    void Meds()
-    {
-        int randomMed = Random.Range(0, 41);
-        for (int k = 0; k < meds.Length; k++)
-        {
-            if (randomMed == k)
-            {
-                Instantiate(meds[k], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-            }
-        }
-    }
-
-    #region Commented Code
-    //IEnumerator ObjectsFall(float condTime, float disTime)
+    #region Invokes
+    //public void Condoms()
     //{
-    //    while (true)
+    //    int randomCondom = Random.Range(0, 5);
+    //    for (int i = 0; i < condoms.Length; i++)
     //    {
-    //        int randomCondom = Random.Range(0, 5);
-    //        int randomDisease = Random.Range(0, 19);
-    //        int randomMed = Random.Range(0, 41);
-    //        print("Cond " + randomCondom + ". Dis " + randomDisease + ". Med " + randomMed);
-    //        for (int i = 0; i < condoms.Length; i++)
+    //        if (randomCondom == i)
     //        {
-    //            yield return new WaitForSeconds(condTime);
-    //            if (randomCondom == i)
-    //            {
-    //                Instantiate(condoms[i], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-    //            }
-    //        }
-    //        for (int j = 0; j < diseases.Length; j++)
-    //        {
-    //            yield return new WaitForSeconds(disTime);
-    //            if (randomDisease == j)
-    //            {
-    //                Instantiate(diseases[j], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-    //            }
-    //        }
-    //        for (int k = 0; k < meds.Length; k++)
-    //        {
-    //            if (randomMed == k)
-    //            {
-    //                Instantiate(meds[k], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
-    //            }
+    //            Instantiate(condoms[i], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
     //        }
     //    }
     //}
-    #endregion 
+    //void Diseases()
+    //{
+    //    int randomDisease = Random.Range(0, 25);
+    //    for (int j = 0; j < diseases.Length; j++)
+    //    {
+    //        if (randomDisease == j)
+    //        {
+    //            Instantiate(diseases[j], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
+    //        }
+    //    }
+    //}
+    //void Meds()
+    //{
+    //    int randomMed = Random.Range(0, 41);
+    //    for (int k = 0; k < meds.Length; k++)
+    //    {
+    //        if (randomMed == k)
+    //        {
+    //            Instantiate(meds[k], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
+    //        }
+    //    }
+    //}
+    #endregion
+
+    #region IEnumerators
+    IEnumerator Condoms(float condTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(condTime);
+            int randomCondom = Random.Range(0, 5);
+            for (int i = 0; i < condoms.Length; i++)
+            {
+                if (randomCondom == i)
+                {
+                    Instantiate(condoms[i], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
+                }
+            }
+        }
+    }
+    IEnumerator Diseases(float disTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(disTime);
+            int randomDisease = Random.Range(0, 19);
+            for (int j = 0; j < diseases.Length; j++)
+            {
+                if (randomDisease == j)
+                {
+                    Instantiate(diseases[j], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
+                }
+            }
+        }
+    }
+    IEnumerator Meds(float medsTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(medsTime);
+            int randomMed = Random.Range(0, 41);
+            for (int k = 0; k < meds.Length; k++)
+            {
+                if (randomMed == k)
+                {
+                    Instantiate(meds[k], new Vector2(Random.Range(-8f, 8f), 6f), Quaternion.identity);
+                }
+            }
+        }
+    }
+    IEnumerator Faster(float timer)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(timer);
+            if (condT >= 0.1f && disT >= 0.1f)
+            {
+                condT -= 0.1f;
+                disT -= 0.1f;
+            }
+            foreach (var rB in rBs)
+            {
+                rB.gravityScale += 0.2f;
+            }
+        }
+    }
+    #endregion
 }

@@ -13,12 +13,17 @@ public class HealthBar : MonoBehaviour
     public GameManager score;
     public Text totalScore;
     public bool isDead;
+
     [Header("Sounds")]
     public AudioClip audioObj;
     Sounds sound;
+
+    [Header("Animation")]
+    Animator animator;
     private void Awake()
     {
         sound = FindObjectOfType<Sounds>();
+        animator = GetComponent<Animator>();
     }
     private void Start()
     {
@@ -28,6 +33,14 @@ public class HealthBar : MonoBehaviour
             hearts[i].enabled = true;
         }
     }
+    //private void Update()
+    //{
+    //    if (gameOverPanel.activeSelf)
+    //    {
+    //        animator.Play("Button");
+    //        animator.Play("PauseText");
+    //    }
+    //}
     public void MinusHeart()
     {
         health--;
@@ -49,6 +62,7 @@ public class HealthBar : MonoBehaviour
             gameOverPanel.SetActive(true);
             Time.timeScale = 0f;
             totalScore.text = "Total score: " + PlayerPrefs.GetInt("TotalScore", score.score).ToString();
+            animator.Play("Button");
         }
     }
 }
